@@ -1,0 +1,34 @@
+server:
+  port: 8090
+#注册客户端配置
+eureka:
+  instance:
+    # 心跳间隔时间
+    lease-renewal-interval-in-seconds: 10
+    # 告诉服务端，多少秒没有收到心跳则认为该服务关闭
+    lease-expiration-duration-in-seconds: 20
+    prefer-ip-address: true
+  client:
+    # 定时刷新本地缓存时间
+    #registry-fetch-interval-seconds: 5
+    enabled: true
+    service-url:
+      defaultZone: http://localhost:8080/eureka/
+spring:
+  #应用信息
+  application:
+    name: service-order
+  #redis 配置
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password:
+
+  #数据库数据源
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: yzzy65203
