@@ -1,4 +1,4 @@
-package com.zengcheng.sandhouse.common;
+package com.zengcheng.sandhouse;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
