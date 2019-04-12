@@ -1,46 +1,50 @@
 server:
-  port: 8090
-#æ³¨å†Œå®¢æˆ·ç«¯é…ç½®
+  port: 8091
+#×¢²á¿Í»§¶ËÅäÖÃ
 eureka:
   instance:
-    #å¿ƒè·³é—´éš”æ—¶é—´
+    #ĞÄÌø¼ä¸ôÊ±¼ä
     lease-renewal-interval-in-seconds: 10
-    #å‘Šè¯‰æœåŠ¡ç«¯å¤šä¹…æœªæ”¶åˆ°å¿ƒè·³åˆ™è®¤ä¸ºè¯¥æœåŠ¡å…³é—­
+    #¸æËß·şÎñ¶Ë¶à¾ÃÎ´ÊÕµ½ĞÄÌøÔòÈÏÎª¸Ã·şÎñ¹Ø±Õ
     lease-expiration-duration-in-seconds: 20
     prefer-ip-address: true
   client:
-    #å®šæ—¶åˆ·æ–°æœ¬åœ°ç¼“å­˜
+    #¶¨Ê±Ë¢ĞÂ±¾µØ»º´æ
     #registry-fetch-interval-seconds: 5
     enabled: true
     service-url:
       defaultZone: http://localhost:8080/eureka/
 spring:
-  #åº”ç”¨ä¿¡æ¯
+  #Ó¦ÓÃĞÅÏ¢
   application:
-    name: service-order
-  # å¼‚å¸¸å¤„ç†
+    name: service-user
+  # Òì³£´¦Àí
   mvc:
     throw-exception-if-no-handler-found: true
   resources:
     add-mappings: false
-  #redis è¿æ¥é…ç½®
+  #redis Á¬½ÓÅäÖÃ
   redis:
     database: 0
     host: localhost
     port: 6379
     password:
-    timeout: 5000ms  # è¿æ¥è¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰
+    timeout: 5000ms  # Á¬½Ó³¬Ê±Ê±¼ä£¨ºÁÃë£©
     jedis:
       pool:
-        max-active: 8   # è¿æ¥æ± æœ€å¤§è¿æ¥æ•°ï¼ˆä½¿ç”¨è´Ÿå€¼è¡¨ç¤ºæ²¡æœ‰é™åˆ¶ï¼‰
-        max-wait:   1ms   # è¿æ¥æ± æœ€å¤§é˜»å¡ç­‰å¾…æ—¶é—´ï¼ˆä½¿ç”¨è´Ÿå€¼è¡¨ç¤ºæ²¡æœ‰é™åˆ¶ï¼‰
-        max-idle:   8   # è¿æ¥æ± ä¸­çš„æœ€å¤§ç©ºé—²è¿æ¥
-        min-idle:   0   # è¿æ¥æ± ä¸­çš„æœ€å°ç©ºé—²è¿æ¥
+        max-active: 8   # Á¬½Ó³Ø×î´óÁ¬½ÓÊı£¨Ê¹ÓÃ¸ºÖµ±íÊ¾Ã»ÓĞÏŞÖÆ£©
+        max-wait:   1ms   # Á¬½Ó³Ø×î´ó×èÈûµÈ´ıÊ±¼ä£¨Ê¹ÓÃ¸ºÖµ±íÊ¾Ã»ÓĞÏŞÖÆ£©
+        max-idle:   8   # Á¬½Ó³ØÖĞµÄ×î´ó¿ÕÏĞÁ¬½Ó
+        min-idle:   0   # Á¬½Ó³ØÖĞµÄ×îĞ¡¿ÕÏĞÁ¬½Ó
 
-  #æ•°æ®æºé…ç½®
+  #Êı¾İÔ´ÅäÖÃ
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password: yzzy65203
+#¿ªÆôHystrix¶ÏÂ·Æ÷
+feign:
+  hystrix:
+    enabled: true

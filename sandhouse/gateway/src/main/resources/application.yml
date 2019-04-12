@@ -1,15 +1,15 @@
 server:
   port: 8081
-#×¢²á¿Í»§¶ËÅäÖÃ
+#æ³¨å†Œå®¢æˆ·ç«¯é…ç½®
 eureka:
   instance:
-    # ĞÄÌø¼ä¸ôÊ±¼ä
+    #å¿ƒè·³é—´éš”æ—¶é—´
     lease-renewal-interval-in-seconds: 10
-    # ¸æËß·şÎñ¶Ë£¬¶àÉÙÃëÃ»ÓĞÊÕµ½ĞÄÌøÔòÈÏÎª¸Ã·şÎñ¹Ø±Õ
+    #å‘Šè¯‰æœåŠ¡ç«¯å¤šä¹…æœªæ”¶åˆ°å¿ƒè·³åˆ™è®¤ä¸ºè¯¥æœåŠ¡å…³é—­
     lease-expiration-duration-in-seconds: 20
     prefer-ip-address: true
   client:
-    # ¶¨Ê±Ë¢ĞÂ±¾µØ»º´æÊ±¼ä
+    #å®šæ—¶åˆ·æ–°æœ¬åœ°ç¼“å­˜
     #registry-fetch-interval-seconds: 5
     enabled: true
     service-url:
@@ -22,6 +22,6 @@ zuul:
     api-order:
       path: /api-order/**
       serviceId: service-order
-    api-b:
-      path: /api-b/**
-      serviceId: service-feign
+    api-user:
+      path: /api-user/**
+      serviceId: service-user
