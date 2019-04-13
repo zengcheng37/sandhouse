@@ -1,50 +1,74 @@
 server:
   port: 8091
-#×¢²á¿Í»§¶ËÅäÖÃ
+#æ³¨å†Œå®¢æˆ·ç«¯é…ç½®
 eureka:
   instance:
-    #ĞÄÌø¼ä¸ôÊ±¼ä
+    #å¿ƒè·³é—´éš”æ—¶é—´
     lease-renewal-interval-in-seconds: 10
-    #¸æËß·şÎñ¶Ë¶à¾ÃÎ´ÊÕµ½ĞÄÌøÔòÈÏÎª¸Ã·şÎñ¹Ø±Õ
+    #å‘Šè¯‰æœåŠ¡ç«¯å¤šä¹…æœªæ”¶åˆ°å¿ƒè·³åˆ™è®¤ä¸ºè¯¥æœåŠ¡å…³é—­
     lease-expiration-duration-in-seconds: 20
     prefer-ip-address: true
   client:
-    #¶¨Ê±Ë¢ĞÂ±¾µØ»º´æ
+    #å®šæ—¶åˆ·æ–°æœ¬åœ°ç¼“å­˜
     #registry-fetch-interval-seconds: 5
     enabled: true
     service-url:
       defaultZone: http://localhost:8080/eureka/
 spring:
-  #Ó¦ÓÃĞÅÏ¢
+  #åº”ç”¨ä¿¡æ¯
   application:
     name: service-user
-  # Òì³£´¦Àí
+  # å¼‚å¸¸å¤„ç†
   mvc:
     throw-exception-if-no-handler-found: true
   resources:
     add-mappings: false
-  #redis Á¬½ÓÅäÖÃ
+  #redis è¿æ¥é…ç½®
   redis:
     database: 0
     host: localhost
     port: 6379
     password:
-    timeout: 5000ms  # Á¬½Ó³¬Ê±Ê±¼ä£¨ºÁÃë£©
+    timeout: 5000ms  # è¿æ¥è¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰
     jedis:
       pool:
-        max-active: 8   # Á¬½Ó³Ø×î´óÁ¬½ÓÊı£¨Ê¹ÓÃ¸ºÖµ±íÊ¾Ã»ÓĞÏŞÖÆ£©
-        max-wait:   1ms   # Á¬½Ó³Ø×î´ó×èÈûµÈ´ıÊ±¼ä£¨Ê¹ÓÃ¸ºÖµ±íÊ¾Ã»ÓĞÏŞÖÆ£©
-        max-idle:   8   # Á¬½Ó³ØÖĞµÄ×î´ó¿ÕÏĞÁ¬½Ó
-        min-idle:   0   # Á¬½Ó³ØÖĞµÄ×îĞ¡¿ÕÏĞÁ¬½Ó
-
-  #Êı¾İÔ´ÅäÖÃ
+        max-active: 8   # è¿æ¥æ± æœ€å¤§è¿æ¥æ•°ï¼ˆä½¿ç”¨è´Ÿå€¼è¡¨ç¤ºæ²¡æœ‰é™åˆ¶ï¼‰
+        max-wait:   1ms   # è¿æ¥æ± æœ€å¤§é˜»å¡ç­‰å¾…æ—¶é—´ï¼ˆä½¿ç”¨è´Ÿå€¼è¡¨ç¤ºæ²¡æœ‰é™åˆ¶ï¼‰
+        max-idle:   8   # è¿æ¥æ± ä¸­çš„æœ€å¤§ç©ºé—²è¿æ¥
+        min-idle:   0   # è¿æ¥æ± ä¸­çš„æœ€å°ç©ºé—²è¿æ¥
+  #æ•°æ®æºé…ç½®
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password: yzzy65203
-#¿ªÆôHystrix¶ÏÂ·Æ÷
+  #zipkinæœåŠ¡é“¾è·¯è¿½è¸ª
+  zipkin:
+    sender:
+      type: rabbit
+  #zipkiné‡‡æ ·æ¯”ä¾‹
+  sleuth:
+    sampler:
+      probability: 1.0
+  #rabbitmqé…ç½®
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 5672
+#Hystrixæ–­è·¯å™¨
 feign:
   hystrix:
     enabled: true
+#actuatorç›‘æ§æ£€æŸ¥é…ç½®
+management:
+  endpoints:
+    web:
+      exposure:
+        #åŠ è½½ç«¯ç‚¹ç±»å‹
+        include: "*"
+  endpoint:
+    health:
+      #å¥åº·ä¿¡æ¯ç»†èŠ‚æ˜¾ç¤ºç­–ç•¥
+      show-details: ALWAYS

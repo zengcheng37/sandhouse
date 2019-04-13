@@ -1,4 +1,4 @@
-package com.zengcheng.sandhouse.common.filters;
+package com.zengcheng.sandhouse.filter;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;

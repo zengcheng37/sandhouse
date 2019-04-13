@@ -1,0 +1,26 @@
+server:
+  port: 8082
+#注册客户端配置
+eureka:
+  instance:
+    #心跳间隔时间
+    lease-renewal-interval-in-seconds: 10
+    #告诉服务端多久未收到心跳则认为该服务关闭
+    lease-expiration-duration-in-seconds: 20
+    prefer-ip-address: true
+    health-check-url-path: /actuator/health
+  client:
+    #定时刷新本地缓存
+    registry-fetch-interval-seconds: 15
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://localhost:8080/eureka/
+spring:
+  #应用信息
+  application:
+    name: service-monitor
+  #集成spring-security拦截登录
+  security:
+    user:
+      name: admin
+      password: admin

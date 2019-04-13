@@ -36,7 +36,6 @@ spring:
         max-wait:   1ms   # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle:   8   # 连接池中的最大空闲连接
         min-idle:   0   # 连接池中的最小空闲连接
-
   #数据源配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -44,3 +43,32 @@ spring:
     url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password: yzzy65203
+  #zipkin服务链路追踪
+  zipkin:
+    sender:
+      type: rabbit
+  #zipkin采样比例
+  sleuth:
+    sampler:
+      probability: 1.0
+  #rabbitmq配置
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 5672
+#Hystrix断路器
+feign:
+  hystrix:
+    enabled: true
+#actuator监控检查配置
+management:
+  endpoints:
+    web:
+      exposure:
+        #加载端点类型
+        include: "*"
+  endpoint:
+    health:
+      #健康信息细节显示策略
+      show-details: ALWAYS

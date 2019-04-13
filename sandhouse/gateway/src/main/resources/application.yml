@@ -1,5 +1,11 @@
 server:
+  #应用端口
   port: 8081
+  compression:
+    #开启gzip压缩(可以加快网络传输速度)
+    enabled: true
+    #指定哪些content-type支持压缩,统一在网关进行压缩
+    mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
 #注册客户端配置
 eureka:
   instance:
@@ -16,8 +22,24 @@ eureka:
       defaultZone: http://localhost:8080/eureka/
 spring:
   application:
+    #服务名
     name: service-gateway
+  #zipkin服务链路追踪
+  zipkin:
+    sender:
+      type: rabbit
+  #zipkin采样比例
+  sleuth:
+    sampler:
+      probability: 1.0
+  #rabbitmq配置
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 5672
 zuul:
+  #此处配置zuul网关代理的路由(如后期服务太多可考虑动态从redis或mysql等进行动态读取)
   routes:
     api-order:
       path: /api-order/**
@@ -25,3 +47,14 @@ zuul:
     api-user:
       path: /api-user/**
       serviceId: service-user
+#actuator监控检查配置
+management:
+  endpoints:
+    web:
+      exposure:
+        #加载端点类型
+        include: "*"
+  endpoint:
+    health:
+      #健康信息细节显示策略
+      show-details: ALWAYS
