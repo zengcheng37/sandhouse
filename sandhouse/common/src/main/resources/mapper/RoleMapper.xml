@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zengcheng.sandhouse.common.mapper.RoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zengcheng.sandhouse.common.vo.RoleVO">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="nameZh" property="nameZh" />
+        <collection property="permissions" column="id" fetchType="eager"
+                    select="com.zengcheng.sandhouse.common.mapper.PermissionMapper.selectPermissionsByRoleId"/>
+    </resultMap>
+    
+    <select id="selectRolesByAdminId" resultMap="BaseResultMap">
+        SELECT
+            r.*
+        FROM
+            admin_role ar,
+            role r
+        WHERE
+            ar.aid = #{adminId}
+        AND
+            ar.rid = r.id;
+    </select>
+
+</mapper>

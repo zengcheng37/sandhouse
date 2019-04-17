@@ -27,9 +27,9 @@ public class MpGenerator {
         //去前缀
         String[] prefix = new String[]{""};
         //表名
-        String [] tables  =  new String[]{"student"};
-        String entityDir = "C:\\Users\\zeng\\Documents\\zengcheng\\sandhouse\\order\\src\\main\\java";
-        String mapperDir = "C:\\Users\\zeng\\Documents\\zengcheng\\sandhouse\\order\\src\\main\\resources\\mapper\\";
+        String [] tables  =  new String[]{"admin","role","permission"};
+        String entityDir = "C:\\Users\\zeng\\Documents\\zengcheng\\sandhouse\\common\\src\\main\\java";
+        String mapperDir = "C:\\Users\\zeng\\Documents\\zengcheng\\sandhouse\\common\\src\\main\\resources\\mapper\\";
         String controllerDir = "C:\\Users\\zeng\\Documents\\zengcheng\\sandhouse\\order\\src\\main\\java";
 
         //mapper.xml entity mapper.java 都放在common-db中
