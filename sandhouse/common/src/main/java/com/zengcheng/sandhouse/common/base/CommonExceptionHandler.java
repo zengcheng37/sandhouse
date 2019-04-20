@@ -5,6 +5,7 @@ import com.zengcheng.sandhouse.common.entity.ResponseEntity;
 import com.zengcheng.sandhouse.common.entity.ResponseEntityFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,6 +44,9 @@ public class CommonExceptionHandler {
         } else if(ex instanceof IllegalArgumentException){
             //参数错误
             return ResponseEntityFactory.error(ResCodeEnum.R04);
+        } else if(ex instanceof AccessDeniedException){
+            //SpringSecurity 权限不足异常
+            return ResponseEntityFactory.error(ResCodeEnum.R05);
         } else {
             //其他异常
             return ResponseEntityFactory.error(ResCodeEnum.R01);

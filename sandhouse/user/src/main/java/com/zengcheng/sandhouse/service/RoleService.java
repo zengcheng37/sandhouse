@@ -1,16 +1,16 @@
 package com.zengcheng.sandhouse.service;
 
-import com.zengcheng.sandhouse.common.entity.Admin;
 import com.baomidou.mybatisplus.service.IService;
+import com.zengcheng.sandhouse.common.entity.Role;
 
 /**
  * <p>
- * 管理员用户表; InnoDB free: 10240 kB 服务类
+ * 角色表; InnoDB free: 10240 kB 服务类
  * </p>
  *
  * @author zengcheng
  * @since 2019-04-16
  */
-public interface AdminService extends IService<Admin> {
+public interface RoleService extends IService<Role> {
 
 }

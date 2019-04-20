@@ -1,7 +1,7 @@
 package com.zengcheng.sandhouse.service;
 
-import com.zengcheng.sandhouse.common.entity.Permission;
 import com.baomidou.mybatisplus.service.IService;
+import com.zengcheng.sandhouse.common.entity.Permission;
 
 /**
  * <p>

@@ -1,6 +1,7 @@
 package com.zengcheng.sandhouse.web;
 
 import com.zengcheng.sandhouse.service.OrderFeignService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +17,10 @@ import javax.annotation.Resource;
 @RestController
 public class ExampleController {
 
-    @Resource
-    private OrderFeignService orderFeignService;
-
     @GetMapping("/hi")
+    @PreAuthorize("hasRole('admin')")
     public String sayHi(){
-        return orderFeignService.sayHiFromOrderModule();
+        return "hello";
     }
 
 }

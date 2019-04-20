@@ -1,4 +1,4 @@
-package com.zengcheng.sandhouse.service.impl;
+package com.zengcheng.sandhouse.common.util;
 
 import com.zengcheng.sandhouse.common.entity.Permission;
 import com.zengcheng.sandhouse.common.mapper.AdminMapper;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @author zengcheng
  * @date 2019/4/16
  */
-@Service
+@Service(value = "userDetailService")
 public class AdminUserDetailsServiceImpl implements UserDetailsService {
 
     @Resource

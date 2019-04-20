@@ -1,17 +1,18 @@
 package com.zengcheng.sandhouse.common.util;
 
+import com.alibaba.fastjson.JSON;
 import com.zengcheng.sandhouse.common.enums.RedisKeys;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * JWT 工具类
@@ -44,11 +45,12 @@ public class JwtTokenUtil implements Serializable {
      * 签发JWT
      * 根据用户名userName和用户类型uerType生成过期时间EXPIRATION_TIME的token.
      */
-    public String generateToken(String userName,String userType) {
+    public String generateToken(String userName, String userType, Collection<? extends GrantedAuthority> grantedAuthorities) {
         Map<String, Object> claims = new HashMap<>(16);
         claims.put(CLAIM_KEY_USERNAME,userName);
         claims.put(CLAIM_KEY_USERTYPE,userType);
-        return Jwts.builder()
+        //生成token
+        String generatedToken = Jwts.builder()
                 //设置需要存在token中的信息,用HashMap存储
                 .setClaims( claims )
                 //设置预计过期时间
@@ -57,6 +59,10 @@ public class JwtTokenUtil implements Serializable {
                 .signWith( SignatureAlgorithm.HS256, SECRET )
                 //完成
                 .compact();
+        //放入redis中并设置过期时间为EXPIRATION_TIME毫秒
+        redisTemplate.opsForValue().set(generatedToken, JSON.toJSONString(grantedAuthorities));
+        redisTemplate.expire(generatedToken,EXPIRATION_TIME, TimeUnit.MILLISECONDS);
+        return generatedToken;
     }
 
     /**
@@ -76,7 +82,7 @@ public class JwtTokenUtil implements Serializable {
             return "accessToken is expired!";
         }
         //2.判断token是否在redis中.
-        Boolean ifTokenInRedis = redisTemplate.opsForHash().hasKey(RedisKeys.TOKEN_HASH,token);
+        Boolean ifTokenInRedis = redisTemplate.hasKey(token);
         return ifTokenInRedis ? null:"accessToken is expired!";
     }
 
@@ -130,5 +136,19 @@ public class JwtTokenUtil implements Serializable {
                 .parseClaimsJws( token )
                 .getBody();
     }
+
+    /**
+     * 删除redis中的指定token
+     * @param token
+     * @return
+     */
+    public Boolean deleteToken(String token){
+        return redisTemplate.delete(token);
+    }
+
+//    public static void main(String[] args){
+//        JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
+//        System.out.println("加密后"+jwtTokenUtil.generateToken("曾诚","1"));
+//    }
 
 }

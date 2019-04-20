@@ -1,14 +1,21 @@
 package com.zengcheng.sandhouse.common.config;
 
-import org.springframework.context.annotation.Bean;
+import com.zengcheng.sandhouse.common.filter.AccessTokenFilter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.annotation.Resource;
+import javax.servlet.Filter;
 
 /**
  * SpringSecurity配置
@@ -19,9 +26,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Resource
+    @Qualifier("userDetailService")
+    private UserDetailsService userDetailsService;
+
+    @Resource
+    private AccessTokenFilter accessTokenFilter;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http
                 //禁用csrf
                 .csrf().disable()
@@ -32,15 +45,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //OPTIONS请求全部放行
                 .antMatchers( HttpMethod.OPTIONS, "/**").permitAll()
                 //登录接口放行
-                .antMatchers("/login").permitAll()
-                .antMatchers("/admin/**").hasIpAddress("localhost")
+                .antMatchers("/admin/login").permitAll()
                 //其他接口全部接受验证
-                .anyRequest().authenticated();
-//                .and()
-//                //对上述匹配成功请求添加过滤器
-//                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().authenticated()
+                .and()
+                //对上述匹配成功请求添加过滤器
+                .addFilterAfter(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
         //开启头部缓存
         http.headers().cacheControl();
     }
+
+    private Filter authenticationTokenFilterBean() {
+        return accessTokenFilter;
+    }
+
+    @Override
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                //配置自己的UserDetailsService
+                .userDetailsService(userDetailsService)
+                //配置密码加密方式以及匹配方式
+                .passwordEncoder(new BCryptPasswordEncoder());
+    }
+
+//    public static void main(String[] args){
+//        System.out.println("加密后的密码为"+new BCryptPasswordEncoder().encode("123456"));
+//    }
 
 }

@@ -43,7 +43,7 @@ public class JwtTokenUtil implements Serializable {
             return "accessToken is expired!";
         }
         //2.判断token是否在redis中.
-        Boolean ifTokenInRedis = redisTemplate.opsForHash().hasKey(RedisKeys.TOKEN_HASH,token);
+        Boolean ifTokenInRedis = redisTemplate.hasKey(token);
         return ifTokenInRedis ? null:"accessToken is expired!";
     }
 
