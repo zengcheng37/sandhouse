@@ -3,10 +3,8 @@ package com.zengcheng.sandhouse.web;
 import com.zengcheng.sandhouse.common.entity.ResponseEntity;
 import com.zengcheng.sandhouse.dto.AdminLoginDTO;
 import com.zengcheng.sandhouse.service.AdminService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,7 +25,7 @@ public class AdminController {
         return adminService.adminLogin(adminLoginDTO);
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public ResponseEntity logoutAdmin(HttpServletRequest request){
         String logoutToken = request.getHeader("accessToken");
         return adminService.adminLogout(logoutToken);
