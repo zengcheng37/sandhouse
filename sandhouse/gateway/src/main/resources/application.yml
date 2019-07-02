@@ -1,6 +1,13 @@
 server:
   #应用端口
   port: 8081
+  #配置ssl证书
+#  ssl:
+#    enabled: true
+#    key-store: classpath:xxx.jks
+#    key-store-password: xxxx
+#    key-store-type: JKS
+#    key-alias: alias
   compression:
     #开启gzip压缩(可以加快网络传输速度)
     enabled: true
@@ -51,15 +58,38 @@ spring:
     username: guest
     password: guest
     port: 5672
-zuul:
-  #此处配置zuul网关代理的路由(如后期服务太多可考虑动态从redis或mysql等进行动态读取)
-  routes:
-    api-order:
-      path: /api-order/**
-      serviceId: service-order
-    api-user:
-      path: /api-user/**
-      serviceId: service-user
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          #开启从注册中心读取服务名及分发路由
+          enabled: true
+          #默认以serviceId小写作为路由
+          lowerCaseServiceId: true
+      #当需要转发到其他路由时的配置
+#      routes:
+#        - id: service-hi
+#          uri: lb://SERVICE-HI
+#          predicates:
+#            - Path=/demo/**
+#          filters:
+#            - StripPrefix=1
+      #gateway ssl支持
+#      httpclient:
+#        ssl:
+#          handshake-timeout-millis: 10000
+#          close-notify-flush-timeout-millis: 3000
+#          close-notify-read-timeout-millis: 0
+#          useInsecureTrustManager: true
+#zuul:
+#  #此处配置zuul网关代理的路由(如后期服务太多可考虑动态从redis或mysql等进行动态读取)
+#  routes:
+#    api-order:
+#      path: /api-order/**
+#      serviceId: service-order
+#    api-user:
+#      path: /api-user/**
+#      serviceId: service-user
 #actuator监控检查配置
 management:
   endpoints:

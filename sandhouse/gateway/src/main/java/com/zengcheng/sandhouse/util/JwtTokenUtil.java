@@ -1,6 +1,5 @@
 package com.zengcheng.sandhouse.util;
 
-import com.zengcheng.sandhouse.constant.RedisKeys;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.data.redis.core.RedisTemplate;

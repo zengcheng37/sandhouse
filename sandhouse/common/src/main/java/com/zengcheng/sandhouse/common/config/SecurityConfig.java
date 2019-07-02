@@ -47,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( HttpMethod.OPTIONS, "/**").permitAll()
                 //登录接口放行
                 .antMatchers("/admin/login").permitAll()
+                //监控接口放行
+                .antMatchers("/actuator/**").permitAll()
                 //其他接口全部接受验证
                 .anyRequest().authenticated()
                 .and()
@@ -73,9 +75,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //配置密码加密方式以及匹配方式
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
-
-//    public static void main(String[] args){
-//        System.out.println("加密后的密码为"+new BCryptPasswordEncoder().encode("123456"));
-//    }
 
 }

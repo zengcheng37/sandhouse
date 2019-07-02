@@ -3,7 +3,6 @@ package com.zengcheng.sandhouse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
 /**
  * zuul网关启动类
@@ -11,7 +10,6 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
  * @date 2019/4/11
  */
 @EnableEurekaClient
-@EnableZuulProxy
 @SpringBootApplication
 public class GatewayApplication {
 

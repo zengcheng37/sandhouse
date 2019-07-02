@@ -19,6 +19,9 @@
         <module>discovery-server</module>
         <module>gateway</module>
         <module>common</module>
+        <module>monitor</module>
+        <module>order</module>
+        <module>user</module>
     </modules>
 
     <properties>
@@ -41,6 +44,13 @@
             <artifactId>tomcat-embed-core</artifactId>
             <version>RELEASE</version>
             <scope>compile</scope>
+        </dependency>
+        <!-- lombok插件 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.8</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

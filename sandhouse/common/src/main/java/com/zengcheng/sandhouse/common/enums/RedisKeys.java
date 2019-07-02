@@ -6,9 +6,10 @@ package com.zengcheng.sandhouse.common.enums;
  * @date 2019/4/16
  */
 public interface RedisKeys {
+
     /**
-     * redis中用户的hash表名
+     * redis中websocket连接的set表名
      */
-    String TOKEN_HASH = "tokens";
+    String WEBSOCKET_LINK_SET = "websocket-link";
 
 }
