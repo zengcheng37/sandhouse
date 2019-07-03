@@ -1,5 +1,6 @@
 server:
   port: 8091
+  connection-timeout: 180000
 #注册客户端配置
 eureka:
   instance:

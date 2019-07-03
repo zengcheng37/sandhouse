@@ -2,9 +2,18 @@ package com.zengcheng.sandhouse.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.web.cors.reactive.CorsUtils;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
+
+import static org.springframework.web.cors.CorsConfiguration.ALL;
 
 /**
  * SpringCloud请求跨域配置
@@ -13,21 +22,34 @@ import org.springframework.web.filter.CorsFilter;
  */
 @Configuration
 public class CorsConfig {
+
+    private static final String MAX_AGE = "18000L";
+
     @Bean
-    public CorsFilter corsFilter() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        final CorsConfiguration config = new CorsConfiguration();
-        // 允许cookies跨域
-        config.setAllowCredentials(true);
-        // 允许向该服务器提交请求的URI，*表示全部允许，在SpringMVC中，如果设成*，会自动转成当前请求头中的Origin
-        config.addAllowedOrigin("*");
-        // 允许访问的头信息,*表示全部
-        config.addAllowedHeader("*");
-        // 预检请求的缓存时间（秒），即在这个时间段里，对于相同的跨域请求不会再预检了
-        config.setMaxAge(18000L);
-        // 允许提交请求的方法，*表示全部允许
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+    public WebFilter corsFilter() {
+        return (ServerWebExchange ctx, WebFilterChain chain) -> {
+            ServerHttpRequest request = ctx.getRequest();
+            if (!CorsUtils.isCorsRequest(request)) {
+                return chain.filter(ctx);
+            }
+            HttpHeaders requestHeaders = request.getHeaders();
+            ServerHttpResponse response = ctx.getResponse();
+            HttpMethod requestMethod = requestHeaders.getAccessControlRequestMethod();
+            HttpHeaders headers = response.getHeaders();
+            headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, requestHeaders.getOrigin());
+            headers.addAll(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, requestHeaders.getAccessControlRequestHeaders());
+            if (requestMethod != null) {
+                headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, requestMethod.name());
+            }
+            headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            headers.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, ALL);
+            headers.add(HttpHeaders.ACCESS_CONTROL_MAX_AGE, MAX_AGE);
+            if (request.getMethod() == HttpMethod.OPTIONS) {
+                response.setStatusCode(HttpStatus.OK);
+                return Mono.empty();
+            }
+            return chain.filter(ctx);
+        };
     }
+
 }

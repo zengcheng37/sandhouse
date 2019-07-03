@@ -1,6 +1,7 @@
 package com.zengcheng.sandhouse.filter;
 
 import com.zengcheng.sandhouse.util.JwtTokenUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -25,6 +26,7 @@ import java.util.regex.Pattern;
  * @date 2019/4/11
  */
 @Component
+@Slf4j
 public class JwtTokenFilter implements GlobalFilter, Ordered {
 
     @Resource
@@ -37,9 +39,7 @@ public class JwtTokenFilter implements GlobalFilter, Ordered {
     /**
      * 配置无需校验token的请求
      */
-    private static final Pattern PATTERN = Pattern.compile("/api-user/notneedlogin");
-
-    private Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
+    private static final Pattern PATTERN = Pattern.compile("/service-user/admin/login");
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -48,7 +48,7 @@ public class JwtTokenFilter implements GlobalFilter, Ordered {
         String path = request.getPath().toString();
         if(PATTERN.matcher(path).matches()){
             //验证失败，不进行路由
-            logger.info("来自{}的请求无需token,过滤器不拦截", path);
+            log.info("来自{}的请求无需token,过滤器不拦截", path);
         }else{
             //获取请求头里的认证信息，如果没有，或者验证不成功返回无权限
             List<String> headerTokens = request.getHeaders().get(TOKEN);
@@ -64,7 +64,7 @@ public class JwtTokenFilter implements GlobalFilter, Ordered {
             }
             if (message != null) {
                 //验证失败，不进行路由
-                logger.info("来自{}的请求被过滤器拦截返回: {}", path,message);
+                log.info("来自{}的请求被过滤器拦截返回: {}", path,message);
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
             }
