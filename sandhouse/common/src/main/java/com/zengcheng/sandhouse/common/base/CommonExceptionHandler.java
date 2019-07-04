@@ -3,8 +3,7 @@ package com.zengcheng.sandhouse.common.base;
 import com.zengcheng.sandhouse.common.enums.ResCodeEnum;
 import com.zengcheng.sandhouse.common.entity.ResponseEntity;
 import com.zengcheng.sandhouse.common.entity.ResponseEntityFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,8 +19,9 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2019/4/12
  */
 @ControllerAdvice
+@Slf4j
 public class CommonExceptionHandler {
-    private static Logger logger = LoggerFactory.getLogger(CommonExceptionHandler.class);
+
     /**
      * 主要异常处理方法
      * @param ex 异常对象
@@ -35,7 +35,7 @@ public class CommonExceptionHandler {
             response.setStatus(404);
             return null;
         }
-        logger.error("请求地址{}\n\t,请求方式{}\n\t,请求来源{}\n\t,发生异常:",
+        log.error("请求地址{},\n\t请求方式{},\n\t请求来源{},\n\t发生异常:",
                 request.getRequestURI(),request.getMethod()
                 ,request.getRemoteAddr(),ex);
         if(ex instanceof HttpRequestMethodNotSupportedException){

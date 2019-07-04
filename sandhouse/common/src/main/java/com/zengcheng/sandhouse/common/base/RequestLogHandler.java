@@ -1,10 +1,9 @@
 package com.zengcheng.sandhouse.common.base;
 
 import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -19,10 +18,9 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2019/4/12
  */
 @Aspect
+@Slf4j
 @Component
 public class RequestLogHandler {
-
-    private Logger logger = LoggerFactory.getLogger(RequestLogHandler.class);
 
     private ThreadLocal<Long> startTime = new ThreadLocal<>();
 
@@ -62,7 +60,7 @@ public class RequestLogHandler {
                 }
             }
         }
-        logger.info("\n\t  - {}请求:{}\n\t  - IP:{}\n\t  - 方法:{}\n\t  - 参数:({})", method, uri, request.getRemoteAddr(), classMethod, params.toString());
+        log.info("\n\t  - {}请求:{}\n\t  - IP:{}\n\t  - 方法:{}\n\t  - 参数:({})", method, uri, request.getRemoteAddr(), classMethod, params.toString());
         return pjp.proceed();
     }
 
@@ -84,9 +82,9 @@ public class RequestLogHandler {
         //请求开始时间 请求耗时 = 当前时间 - 开始时间
         long beginTime = startTime.get();
         if (object instanceof String) {
-            logger.info("\n\t  - {}请求结束:{}\n\t - 耗时:{}ms\n\t  - 返回 String:{}", method, uri, System.currentTimeMillis() - beginTime, object);
+            log.info("\n\t  - {}请求结束:{}\n\t - 耗时:{}ms\n\t  - 返回 String:{}", method, uri, System.currentTimeMillis() - beginTime, object);
         } else {
-            logger.info("\n\t  - {}请求结束:{}\n\t  - 耗时:{}ms\n\t  - 返回 Object:{}", method, uri, System.currentTimeMillis() - beginTime, JSON.toJSONString(object));
+            log.info("\n\t  - {}请求结束:{}\n\t  - 耗时:{}ms\n\t  - 返回 Object:{}", method, uri, System.currentTimeMillis() - beginTime, JSON.toJSONString(object));
         }
         startTime.remove();
     }
