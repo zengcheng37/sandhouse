@@ -6,7 +6,8 @@ eureka:
   client:
     #不注册自己
     registerWithEureka: false
-    fetchRegistry: false
+    #是否允许拉取注册信息
+    fetchRegistry: true
     #注册中心地址
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
