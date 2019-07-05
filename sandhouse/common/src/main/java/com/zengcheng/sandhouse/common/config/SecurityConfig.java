@@ -43,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //认证请求
                 .authorizeRequests()
                 .antMatchers("/v2/**").permitAll()
+                .antMatchers("/error/**").permitAll()
                 //OPTIONS请求全部放行
                 .antMatchers( HttpMethod.OPTIONS, "/**").permitAll()
                 //登录接口放行

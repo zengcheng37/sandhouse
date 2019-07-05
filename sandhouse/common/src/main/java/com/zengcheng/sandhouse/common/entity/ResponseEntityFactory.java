@@ -40,4 +40,18 @@ public class ResponseEntityFactory {
         errorRes.setResMessage(resCodeEnum.getMessage());
         return errorRes;
     }
+
+    /**
+     * 自定义失败异常
+     * @param resCode 响应码
+     * @param resMessage 响应消息
+     * @return
+     */
+    public static ResponseEntity error(String resCode,String resMessage){
+        ResponseEntity errorRes = new ResponseEntity();
+        errorRes.setResCode(resCode);
+        errorRes.setResMessage(resMessage);
+        return errorRes;
+    }
+
 }
