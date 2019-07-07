@@ -1,0 +1,1 @@
+java -jar zipkin-server-2.11.1-exec.jar --zipkin.collector.rabbitmq.addresses=localhost --zipkin.collector.rabbitmq.username=guest --zipkin.collector.rabbitmq.password=guest --zipkin.storage.mysql.host=localhost --zipkin.storage.mysql.port=3306 --zipkin.storage.mysql.user=root --zipkin.storage.mysql.password=yzzy65203
