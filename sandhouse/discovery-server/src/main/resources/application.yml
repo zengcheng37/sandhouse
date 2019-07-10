@@ -6,11 +6,11 @@ eureka:
   client:
     #不注册自己
     registerWithEureka: false
-    #是否允许拉取注册信息
+    #是否拉取注册信息
     fetchRegistry: true
     #注册中心地址
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:${server.port}/eureka/
   server:
     #关闭eureka的自我保护
     enableSelfPreservation: false
@@ -24,6 +24,12 @@ eureka:
 spring:
   application:
     name: eurka-server
+  #集成spring-security拦截登录
+  security:
+    user:
+      name: admin
+      password: admin
+      roles: USER
 management:
   endpoints:
     web:
@@ -32,3 +38,4 @@ management:
   endpoint:
     health:
       show-details: ALWAYS
+

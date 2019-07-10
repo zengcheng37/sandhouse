@@ -14,7 +14,7 @@ eureka:
     registry-fetch-interval-seconds: 15
     register-with-eureka: false
     service-url:
-      defaultZone: http://localhost:8080/eureka/
+      defaultZone: http://admin:admin@localhost:8080/eureka/
 spring:
   #应用信息
   application:

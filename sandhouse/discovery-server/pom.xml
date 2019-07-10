@@ -34,5 +34,10 @@
             <version>5.1.5.RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <!-- spring-security -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-security</artifactId>
+        </dependency>
     </dependencies>
 </project>

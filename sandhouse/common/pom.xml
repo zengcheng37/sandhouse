@@ -85,8 +85,8 @@
         </dependency>
         <!-- spring-security -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-security</artifactId>
         </dependency>
         <!-- jwt部分 -->
         <dependency>
