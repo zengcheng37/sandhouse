@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8092
 #注册客户端配置
 eureka:
   instance:

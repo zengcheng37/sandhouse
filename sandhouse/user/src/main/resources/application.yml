@@ -77,3 +77,4 @@ management:
     health:
       #健康信息细节显示策略
       show-details: ALWAYS
+
