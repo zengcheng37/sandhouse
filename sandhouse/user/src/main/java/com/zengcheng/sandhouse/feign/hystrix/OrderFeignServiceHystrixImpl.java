@@ -1,6 +1,6 @@
-package com.zengcheng.sandhouse.service.impl;
+package com.zengcheng.sandhouse.feign.hystrix;
 
-import com.zengcheng.sandhouse.service.OrderFeignService;
+import com.zengcheng.sandhouse.feign.OrderFeignService;
 import org.springframework.stereotype.Component;
 
 /**

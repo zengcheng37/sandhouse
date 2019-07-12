@@ -3,6 +3,7 @@ package com.zengcheng.sandhouse.common.vo;
 import com.zengcheng.sandhouse.common.entity.Admin;
 import com.zengcheng.sandhouse.common.entity.Role;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,13 +15,13 @@ public class AdminVO extends Admin {
     /**
      * 管理员用户拥有角色
      */
-    private Set<RoleVO> roles ;
+    private List<RoleVO> roles ;
 
-    public Set<RoleVO> getRoles() {
+    public List<RoleVO> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<RoleVO> roles) {
+    public void setRoles(List<RoleVO> roles) {
         this.roles = roles;
     }
 

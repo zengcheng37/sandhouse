@@ -7,7 +7,7 @@ eureka:
     #不注册自己
     registerWithEureka: false
     #是否拉取注册信息
-    fetchRegistry: true
+    fetchRegistry: false
     #注册中心地址
     serviceUrl:
       defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:${server.port}/eureka/

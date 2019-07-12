@@ -1,6 +1,6 @@
-package com.zengcheng.sandhouse.service;
+package com.zengcheng.sandhouse.feign;
 
-import com.zengcheng.sandhouse.service.impl.OrderFeignServiceHystrixImpl;
+import com.zengcheng.sandhouse.feign.hystrix.OrderFeignServiceHystrixImpl;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +17,7 @@ public interface OrderFeignService {
      * 利用feign调用order模块sayHi接口
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('admin')")
     @RequestMapping(value = "/hello/hi",method = RequestMethod.GET)
     String sayHiFromOrderModule();
 

@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
-@EnableApolloConfig
+@EnableApolloConfig(value = {"hello.properties", "application.properties"})
 public class UserApplication {
 
     public static void main(String[] args) {

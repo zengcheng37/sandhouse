@@ -77,4 +77,11 @@ management:
     health:
       #健康信息细节显示策略
       show-details: ALWAYS
-
+#共享安全上下文(如不开启,则RequestInterceptor中无法取到request)
+hystrix:
+  shareSecurityContext: true
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
