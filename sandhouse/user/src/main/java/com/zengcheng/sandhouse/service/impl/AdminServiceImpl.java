@@ -1,7 +1,7 @@
 package com.zengcheng.sandhouse.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zengcheng.sandhouse.common.entity.Admin;
 import com.zengcheng.sandhouse.common.entity.ResponseEntity;
 import com.zengcheng.sandhouse.common.entity.ResponseEntityFactory;
@@ -43,11 +43,11 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public ResponseEntity adminLogin(AdminLoginDTO adminLoginDTO) {
         //根据用户名和加密后的密码查询数据库
-        EntityWrapper<Admin> adminEntityWrapper = new EntityWrapper<>();
+        QueryWrapper<Admin> adminEntityWrapper = new QueryWrapper<>();
         adminEntityWrapper.eq("name",adminLoginDTO.getUserName())
                 .eq("use_state",0)
                 .eq("delete_state",0);
-        Admin admin = selectOne(adminEntityWrapper);
+        Admin admin = getOne(adminEntityWrapper);
         if(StringUtils.isEmpty(admin)
                 || !passwordEncoder.matches(adminLoginDTO.getPassword(),admin.getPassword())){
             //用户名或密码错误

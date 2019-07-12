@@ -32,7 +32,7 @@ spring:
     port: 6379
     password:
     timeout: 5000ms  # 连接超时时间（毫秒）
-    jedis:
+    lettuce:
       pool:
         max-active: 8   # 连接池最大连接数（使用负值表示没有限制）
         max-wait:   1ms   # 连接池最大阻塞等待时间（使用负值表示没有限制）
@@ -41,10 +41,31 @@ spring:
   #数据源配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimeZone=Shanghai&&allowMultiQueries=true
     username: root
     password: yzzy65203
+    #druid相关配置
+    druid:
+      #监控统计拦截的filters
+#      filters: stat
+      #配置初始化大小/最小/最大
+      initialSize: 1
+      minIdle: 1
+      maxActive: 20
+      #获取连接等待超时时间
+      maxWait: 60000
+      #间隔多久进行一次检测，检测需要关闭的空闲连接
+      timeBetweenEvictionRunsMillis: 60000
+      #一个连接在池中最小生存的时间
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
+      poolPreparedStatements: false
+      maxPoolPreparedStatementPerConnectionSize: 20
   #zipkin服务链路追踪
   zipkin:
     sender:

@@ -1,6 +1,6 @@
 package com.zengcheng.sandhouse.service.impl;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zengcheng.sandhouse.common.entity.Permission;
 import com.zengcheng.sandhouse.common.mapper.PermissionMapper;
 import com.zengcheng.sandhouse.service.PermissionService;

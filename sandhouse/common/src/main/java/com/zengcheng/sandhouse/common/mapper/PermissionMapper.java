@@ -1,6 +1,6 @@
 package com.zengcheng.sandhouse.common.mapper;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zengcheng.sandhouse.common.entity.Permission;
 
 import java.util.List;

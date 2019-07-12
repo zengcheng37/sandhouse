@@ -1,9 +1,9 @@
 package com.zengcheng.sandhouse.service.impl;
 
-import com.zengcheng.sandhouse.common.entity.Student;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zengcheng.sandhouse.common.entity.StudentEntity;
 import com.zengcheng.sandhouse.common.mapper.StudentMapper;
 import com.zengcheng.sandhouse.service.StudentService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2019-04-11
  */
 @Service
-public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> implements StudentService {
+public class StudentServiceImpl extends ServiceImpl<StudentMapper, StudentEntity> implements StudentService {
 
 }

@@ -1,8 +1,8 @@
 package com.zengcheng.sandhouse.common.config;
 
-import com.baomidou.mybatisplus.MybatisConfiguration;
-import com.baomidou.mybatisplus.MybatisXMLLanguageDriver;
-import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.github.pagehelper.PageInterceptor;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.plugin.Interceptor;
