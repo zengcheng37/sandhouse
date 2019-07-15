@@ -1,5 +1,6 @@
 server:
   port: 8092
+  connection-timeout: 180000
 #注册客户端配置
 eureka:
   instance:
@@ -21,6 +22,9 @@ spring:
   # 异常处理
   mvc:
     throw-exception-if-no-handler-found: true
+  #当遇到同样名字的时候，是否允许覆盖注册(seata与feign中有一个bean命名冲突"feignHystrixBuilder")
+  main:
+    allow-bean-definition-overriding: true
   resources:
     add-mappings: false
   #redis 连接配置
@@ -81,6 +85,11 @@ spring:
     username: guest
     password: guest
     port: 5672
+  #seata 事务管理组名
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: sandhouse_test
 #Hystrix断路器
 feign:
   hystrix:
@@ -96,3 +105,10 @@ management:
     health:
       #健康信息细节显示策略
       show-details: ALWAYS
+#hystrix设置隔离策略为信号量模式(如不开启,则RequestInterceptor中无法取到request)
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE

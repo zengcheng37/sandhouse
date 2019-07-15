@@ -22,9 +22,11 @@ spring:
   # 异常处理
   mvc:
     throw-exception-if-no-handler-found: true
+  #当遇到同样名字的时候，是否允许覆盖注册(seata与feign中有一个bean命名冲突"feignHystrixBuilder")
+  main:
+    allow-bean-definition-overriding: true
   resources:
-    static-locations: classpath:/static/error
-#    add-mappings: false
+    add-mappings: false
   #redis 连接配置
   redis:
     database: 0
@@ -83,6 +85,11 @@ spring:
     username: guest
     password: guest
     port: 5672
+  #seata 事务管理组名
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: sandhouse_test
 #Hystrix断路器
 feign:
   hystrix:
@@ -98,9 +105,8 @@ management:
     health:
       #健康信息细节显示策略
       show-details: ALWAYS
-#共享安全上下文(如不开启,则RequestInterceptor中无法取到request)
+#hystrix设置隔离策略为信号量模式(如不开启,则RequestInterceptor中无法取到request)
 hystrix:
-  shareSecurityContext: true
   command:
     default:
       execution:
