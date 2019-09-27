@@ -29,7 +29,7 @@ public class AuthHandShakeInterceptor implements HandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest,
                                    ServerHttpResponse serverHttpResponse,
                                    WebSocketHandler webSocketHandler,
-                                   Map<String, Object> map) throws Exception {
+                                   Map<String, Object> map) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
@@ -50,7 +50,10 @@ public class AuthHandShakeInterceptor implements HandshakeInterceptor {
     public void afterHandshake(ServerHttpRequest serverHttpRequest,
                                ServerHttpResponse serverHttpResponse,
                                WebSocketHandler webSocketHandler, Exception e) {
-
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        log.info("用户{}简历WebSocket连接握手结束",userDetails.getUsername());
     }
 
 }

@@ -37,6 +37,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     private JwtTokenUtil jwtTokenUtil;
 
     @Resource
+    private AdminMapper adminMapper;
+
+    @Resource
     @Qualifier("userDetailService")
     private UserDetailsService userDetailsService;
 

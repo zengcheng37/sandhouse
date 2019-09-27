@@ -12,14 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * mybatis-plus生成工具类
+ * @author
  */
 public class MpGeneratorUtil {
 
+    private MpGeneratorUtil() {
+    }
+
     /**
-     *生成Mapper文件
-     */
-    /**
+     * 生成Mapper文件
      * @param dataSourceConfig 数据库配置
      * @param mapperDir 文件输出目录
      * @param author 作者
@@ -28,7 +30,7 @@ public class MpGeneratorUtil {
      * @param excludeTables 排除的表
      *tablePrefixs,includeTables,至少填写一项,不然无法生成
      */
-    public   static void createMapperXml(DataSourceConfig dataSourceConfig,String mapperDir, String author,String parentPkg,String module,String[] tablePrefixs,String[] includeTables,String[] excludeTables){
+    public static void createMapperXml(DataSourceConfig dataSourceConfig,String mapperDir, String author,String parentPkg,String module,String[] tablePrefixs,String[] includeTables,String[] excludeTables){
         AutoGenerator mpg = new AutoGenerator();
         mpg.setDataSource(dataSourceConfig);
 

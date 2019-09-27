@@ -7,6 +7,7 @@ eureka:
     lease-renewal-interval-in-seconds: 10
     #告诉服务端多久未收到心跳则认为该服务关闭
     lease-expiration-duration-in-seconds: 20
+    #以IP地址注册到服务中心，相互注册使用IP地址
     prefer-ip-address: true
     health-check-url-path: /actuator/health
   client:

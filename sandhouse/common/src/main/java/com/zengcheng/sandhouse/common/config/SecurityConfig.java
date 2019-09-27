@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //禁用csrf
                 .csrf().disable()
                 //因为使用JWT，所以不需要HttpSession，此处将session生成策略变为无状态
-                .sessionManagement().sessionCreationPolicy( SessionCreationPolicy.STATELESS).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 //认证请求
                 .authorizeRequests()
                 //swagger相关请求路径放行

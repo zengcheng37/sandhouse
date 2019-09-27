@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Date;
  * @date 2019/4/14
  */
 @Component
-public class JwtTokenUtil implements Serializable {
+public class JwtTokenUtil {
 
     @Resource
     private RedisTemplate<String,String> redisTemplate;
@@ -31,7 +30,7 @@ public class JwtTokenUtil implements Serializable {
      * 2.判断token是否在redis中.
      */
     public String validateToken(String token) {
-        Boolean ifTokenExpired;
+        boolean ifTokenExpired;
         //1.判断token中的信息过期时间等(此处不做权限校验).
         try{
             ifTokenExpired = isTokenExpired( token );
@@ -42,7 +41,7 @@ public class JwtTokenUtil implements Serializable {
             return "accessToken is expired!";
         }
         //2.判断token是否在redis中.
-        Boolean ifTokenInRedis = redisTemplate.hasKey(token);
+        boolean ifTokenInRedis = redisTemplate.hasKey(token);
         return ifTokenInRedis ? null:"accessToken is expired!";
     }
 

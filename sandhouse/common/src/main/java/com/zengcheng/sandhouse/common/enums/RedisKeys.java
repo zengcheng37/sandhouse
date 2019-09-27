@@ -5,11 +5,13 @@ package com.zengcheng.sandhouse.common.enums;
  * @author zengcheng
  * @date 2019/4/16
  */
-public interface RedisKeys {
+public final class RedisKeys {
 
     /**
      * redis中websocket连接的set表名
      */
-    String WEBSOCKET_LINK_SET = "websocket-link";
+    public static final String WEBSOCKET_LINK_SET = "websocket-link";
 
+    private RedisKeys() {
+    }
 }

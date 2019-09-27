@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.github.pagehelper.PageInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -23,10 +24,11 @@ import java.util.Properties;
  * @author zengcheng
  */
 @Configuration
+@Slf4j
 public class MybatisPlusConfig {
 
     @Bean
-    public SqlSessionFactory sqlSessionFactoryBean(DataSource dataSource) {
+    public SqlSessionFactory sqlSessionFactoryBean(DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean bean = new MybatisSqlSessionFactoryBean();
         bean.setTypeAliasesPackage("com.zengcheng.sandhouse.**.entity");
         bean.setDataSource(dataSource);
@@ -52,8 +54,8 @@ public class MybatisPlusConfig {
 
             return bean.getObject();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            log.error("加载 mapper文件出错 错误原因为:",e);
+            throw e;
         }
 
     }

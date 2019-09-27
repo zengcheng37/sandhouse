@@ -33,7 +33,7 @@ public class AdminUserDetailsServiceImpl implements UserDetailsService {
      * @throws UsernameNotFoundException
      */
     @Override
-    public UserDetails loadUserByUsername(String adminName) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String adminName) {
         AdminVO adminVO = adminMapper.selectAdminDetailByAdminName(adminName);
         if(adminVO == null){
             throw new UsernameNotFoundException(adminName);

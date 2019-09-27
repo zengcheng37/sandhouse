@@ -1,7 +1,6 @@
 package com.zengcheng.sandhouse.common.util;
 
 import com.alibaba.fastjson.JSON;
-import com.zengcheng.sandhouse.common.enums.RedisKeys;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,7 +8,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2019/4/14
  */
 @Component
-public class JwtTokenUtil implements Serializable {
+public class JwtTokenUtil {
     /**
      * claims中存储的信息--用户名
      */
@@ -89,7 +87,7 @@ public class JwtTokenUtil implements Serializable {
     /**
      * 获取token是否过期
      */
-    public Boolean isTokenExpired(String token) {
+    private Boolean isTokenExpired(String token) {
         Date expiration = getExpirationDateFromToken( token );
         return expiration.before( new Date() );
     }
@@ -123,7 +121,7 @@ public class JwtTokenUtil implements Serializable {
     /**
      * 获取token的过期时间
      */
-    public Date getExpirationDateFromToken(String token) {
+    private Date getExpirationDateFromToken(String token) {
         return getClaimsFromToken( token ).getExpiration();
     }
 
