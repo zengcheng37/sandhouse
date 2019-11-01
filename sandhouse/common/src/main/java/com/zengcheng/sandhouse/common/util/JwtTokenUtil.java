@@ -1,67 +1,41 @@
 package com.zengcheng.sandhouse.common.util;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
+
 import javax.annotation.Resource;
-import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * JWT 工具类
  * @author zengcheng
- * @date 2019/4/14
+ * @date 2019/10/25
  */
 @Component
 public class JwtTokenUtil {
+
     /**
      * claims中存储的信息--用户名
      */
-    private static final String CLAIM_KEY_USERNAME = "name";
+    private static final String CLAIM_KEY_USERNAME = "user_name";
     /**
-     * claims中存储的信息--用户类型 0-管理员用户 1-普通用户
+     * claims中存储的信息--权限
      */
-    private static final String CLAIM_KEY_USERTYPE = "type";
-    /**
-     * 5天(毫秒)
-     */
-    private static final long EXPIRATION_TIME = 432000000;
+    private static final String CLAIM_KEY_AUTHORITIES = "authorities";
     /**
      * JWT私钥
      */
-    private static final String SECRET = "secret";
+    private static final String SECRET = "sandhouse";
 
     @Resource
-    private RedisTemplate<String,String> redisTemplate;
+    @Qualifier("loadBalancedRestTemplate")
+    private RestTemplate restTemplate;
 
-    /**
-     * 签发JWT
-     * 根据用户名userName和用户类型uerType生成过期时间EXPIRATION_TIME的token.
-     */
-    public String generateToken(String userName, String userType, Collection<? extends GrantedAuthority> grantedAuthorities) {
-        Map<String, Object> claims = new HashMap<>(16);
-        claims.put(CLAIM_KEY_USERNAME,userName);
-        claims.put(CLAIM_KEY_USERTYPE,userType);
-        //生成token
-        String generatedToken = Jwts.builder()
-                //设置需要存在token中的信息,用HashMap存储
-                .setClaims( claims )
-                //设置预计过期时间
-                .setExpiration( new Date( Instant.now().toEpochMilli() + EXPIRATION_TIME  ) )
-                //设置加密方式及私钥
-                .signWith( SignatureAlgorithm.HS256, SECRET )
-                //完成
-                .compact();
-        //放入redis中并设置过期时间为EXPIRATION_TIME毫秒
-        redisTemplate.opsForValue().set(generatedToken, JSON.toJSONString(grantedAuthorities));
-        redisTemplate.expire(generatedToken,EXPIRATION_TIME, TimeUnit.MILLISECONDS);
-        return generatedToken;
-    }
 
     /**
      * 验证JWT是否过期以及是否在redis中存在
@@ -69,19 +43,15 @@ public class JwtTokenUtil {
      * 2.判断token中的信息过期时间等(此处不做权限校验).
      */
     public String validateToken(String token) {
-        Boolean ifTokenExpired;
-        //1.判断token中的信息过期时间等(此处不做权限校验).
-        try{
-            ifTokenExpired = isTokenExpired( token );
-        }catch (Exception ex){
+        Map<String,Object> queryParams = new HashMap<>(2);
+        queryParams.put("token",token);
+        JsonNode tokenResp =
+                restTemplate.getForObject("/service-auth/oauth/check_token?token={token}",JsonNode.class,queryParams);
+        if(StringUtils.isEmpty(tokenResp)  || !StringUtils.isEmpty(tokenResp.get("error"))){
             return "invalid accessToken!";
+        }else {
+            return null;
         }
-        if(ifTokenExpired){
-            return "accessToken is expired!";
-        }
-        //2.判断token是否在redis中.
-        Boolean ifTokenInRedis = redisTemplate.hasKey(token);
-        return ifTokenInRedis ? null:"accessToken is expired!";
     }
 
     /**
@@ -106,12 +76,12 @@ public class JwtTokenUtil {
     }
 
     /**
-     * 根据token获取userType
+     * 根据token获取authorities
      */
-    public String getUserTypeFromToken(String token) {
+    public Set getAuthoritiesFromToken(String token) {
         try{
             //成功解析
-            return getClaimsFromToken( token ).get(CLAIM_KEY_USERTYPE,String.class);
+            return getClaimsFromToken( token ).get(CLAIM_KEY_AUTHORITIES,Set.class);
         }catch (Exception ex){
             //解析错误
             return null;
@@ -134,19 +104,5 @@ public class JwtTokenUtil {
                 .parseClaimsJws( token )
                 .getBody();
     }
-
-    /**
-     * 删除redis中的指定token
-     * @param token
-     * @return
-     */
-    public Boolean deleteToken(String token){
-        return redisTemplate.delete(token);
-    }
-
-//    public static void main(String[] args){
-//        JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
-//        System.out.println("加密后"+jwtTokenUtil.generateToken("曾诚","1"));
-//    }
 
 }

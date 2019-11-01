@@ -22,7 +22,7 @@ public class FeignRequestInterceptor implements RequestInterceptor {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
                 .getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        String values = request.getHeader("accessToken");
-        requestTemplate.header("accessToken", values);
+        String values = request.getHeader("Authorization");
+        requestTemplate.header("Authorization", values);
     }
 }

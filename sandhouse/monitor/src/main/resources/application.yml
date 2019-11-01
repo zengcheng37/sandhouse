@@ -13,7 +13,8 @@ eureka:
   client:
     #定时刷新本地缓存
     registry-fetch-interval-seconds: 15
-    register-with-eureka: false
+#    register-with-eureka: false
+    enabled: true
     service-url:
       defaultZone: http://admin:admin@localhost:8080/eureka/
 spring:

@@ -1,9 +1,6 @@
 package com.zengcheng.sandhouse.common.filter;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.zengcheng.sandhouse.common.util.JwtTokenUtil;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,9 +24,6 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 
     @Resource
     private JwtTokenUtil jwtTokenUtil;
-
-    @Resource
-    private RedisTemplate<String,String> redisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -60,11 +54,9 @@ public class AccessTokenFilter extends OncePerRequestFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(String tokenHeader) {
         String username = jwtTokenUtil.getUserNameFromToken(tokenHeader);
         if (username != null){
-            //从redis中获取该用户角色权限
-            String authentications = redisTemplate.opsForValue().get(tokenHeader);
             Set<SimpleGrantedAuthority> grantedAuthorities;
             try{
-                grantedAuthorities= JSON.parseObject(authentications,new TypeReference<Set<SimpleGrantedAuthority>>(){});
+                grantedAuthorities= jwtTokenUtil.getAuthoritiesFromToken(tokenHeader);
             }catch (Exception ex){
                 return null;
             }

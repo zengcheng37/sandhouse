@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zengcheng.sandhouse.mapper.AdminMapper">
+<!--    <cache type="org.springframework.data.redis.cache.RedisCache" eviction=""/>-->
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zengcheng.sandhouse.vo.AdminVO">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="address" property="address" />
+        <result column="telephone" property="telephone" />
+        <result column="sex" property="sex" />
+        <result column="password" property="password" />
+        <result column="create_time" property="createTime" />
+        <result column="last_update_time" property="lastUpdateTime" />
+        <result column="use_state" property="useState" />
+        <result column="delete_state" property="deleteState" />
+        <collection property="roles" fetchType="eager" column="id"
+                    select="com.zengcheng.sandhouse.mapper.RoleMapper.selectRolesByAdminId"/>
+    </resultMap>
+    <select id="selectAdminDetailByAdminName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+            *
+        FROM
+            admin
+        WHERE
+            name = #{adminName}
+    </select>
+
+</mapper>
