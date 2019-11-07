@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
- *
+ * token过滤器
  * @author zengcheng
  * @date 2019/4/18
  */
@@ -30,7 +30,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-        String tokenHeader = request.getHeader("accessToken");
+        String tokenHeader = request.getHeader("Authorization");
         // 如果请求头中没有token信息则直接放行了
         if (tokenHeader == null) {
             chain.doFilter(request, response);

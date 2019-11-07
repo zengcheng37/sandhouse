@@ -27,7 +27,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * 请求过滤器
@@ -91,10 +90,9 @@ public class JwtTokenFilter implements GlobalFilter, Ordered {
                 log.info("来自{}的请求被过滤器拦截返回: {}", path,message);
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                byte[] bytes = "{\"status\":\"-1\",\"msg\":\"error\"}".getBytes(StandardCharsets.UTF_8);
+                byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
                 DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
-                response.writeWith(Flux.just(buffer));
-                return response.setComplete();
+                return exchange.getResponse().writeWith(Flux.just(buffer));
             }
         }
         return chain.filter(exchange);

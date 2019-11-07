@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -39,6 +40,10 @@ public class AuthConfig extends AuthorizationServerConfigurerAdapter {
     @Resource
     private DataSource dataSource;
 
+    @Resource
+    @Qualifier("CustomUserDetailService")
+    private UserDetailsService userDetailsService;
+
     /**
      * AuthorizationClient配置
      * Grant Type代表当前授权的类型：
@@ -67,9 +72,14 @@ public class AuthConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        //配置token转换器
         endpoints.accessTokenConverter(accessTokenConverter());
+        //配置token存储方式
         endpoints.tokenStore(tokenStore());
+        //配置认证方式管理器
         endpoints.authenticationManager(authenticationManager);
+        //配置用户信息读取类
+        endpoints.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -78,6 +88,7 @@ public class AuthConfig extends AuthorizationServerConfigurerAdapter {
         oauthServer.allowFormAuthenticationForClients();
         //开启/oauth/check_token验证端口认证权限访问。
         oauthServer.checkTokenAccess("permitAll()");
+        oauthServer.tokenKeyAccess("permitAll()");
     }
 
     /**

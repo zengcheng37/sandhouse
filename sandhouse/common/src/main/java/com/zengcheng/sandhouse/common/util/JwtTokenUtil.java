@@ -1,14 +1,18 @@
 package com.zengcheng.sandhouse.common.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -17,6 +21,7 @@ import java.util.*;
  * @date 2019/10/25
  */
 @Component
+@Slf4j
 public class JwtTokenUtil {
 
     /**
@@ -46,7 +51,7 @@ public class JwtTokenUtil {
         Map<String,Object> queryParams = new HashMap<>(2);
         queryParams.put("token",token);
         JsonNode tokenResp =
-                restTemplate.getForObject("/service-auth/oauth/check_token?token={token}",JsonNode.class,queryParams);
+                restTemplate.getForObject("http://SERVICE-AUTH/oauth/check_token?token={token}",JsonNode.class,queryParams);
         if(StringUtils.isEmpty(tokenResp)  || !StringUtils.isEmpty(tokenResp.get("error"))){
             return "invalid accessToken!";
         }else {
@@ -68,9 +73,10 @@ public class JwtTokenUtil {
     public String getUserNameFromToken(String token) {
         try{
             //成功解析
-            return getClaimsFromToken( token ).get(CLAIM_KEY_USERNAME,String.class);
+            return getClaimsFromToken( token ).getStringClaim(CLAIM_KEY_USERNAME);
         }catch (Exception ex){
             //解析错误
+            log.error("JwtTokenUtil token中获取用户名异常!",ex);
             return null;
         }
     }
@@ -81,9 +87,16 @@ public class JwtTokenUtil {
     public Set getAuthoritiesFromToken(String token) {
         try{
             //成功解析
-            return getClaimsFromToken( token ).get(CLAIM_KEY_AUTHORITIES,Set.class);
+            List<String> authorityList = getClaimsFromToken( token ).getStringListClaim(CLAIM_KEY_AUTHORITIES);
+            Set<GrantedAuthority> authorities = new HashSet<>();
+            for(String authority : authorityList){
+                GrantedAuthority tempAuthority = new SimpleGrantedAuthority(authority);
+                authorities.add(tempAuthority);
+            }
+            return authorities;
         }catch (Exception ex){
             //解析错误
+            log.error("JwtTokenUtil token中获取权限信息异常!",ex);
             return null;
         }
     }
@@ -92,17 +105,20 @@ public class JwtTokenUtil {
      * 获取token的过期时间
      */
     private Date getExpirationDateFromToken(String token) {
-        return getClaimsFromToken( token ).getExpiration();
+        return getClaimsFromToken( token ).getExpirationTime();
     }
 
     /**
      * 解析JWT
      */
-    private Claims getClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey( SECRET )
-                .parseClaimsJws( token )
-                .getBody();
+    private JWTClaimsSet getClaimsFromToken(String token) {
+        JWTClaimsSet claimsSet = null;
+        try {
+            claimsSet = JWTParser.parse(token).getJWTClaimsSet();
+        } catch (ParseException e) {
+            log.error("JwtTokenUtil token解析异常!",e);
+        }
+        return claimsSet;
     }
 
 }
