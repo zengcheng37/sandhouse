@@ -49,7 +49,7 @@ public class JwtTokenFilter implements GlobalFilter, Ordered {
     /**
      * 配置无需校验token的请求
      */
-    private static final String PATTERN = "/service-auth/**";
+    private static final String[] PATTERNS = {"/service-auth/**","/**/v2/api-docs"};
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -57,46 +57,47 @@ public class JwtTokenFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getPath().toString();
         PathMatcher pathMatcher = new AntPathMatcher();
-        if(pathMatcher.match(PATTERN,path)){
-            //验证失败，不进行路由
-            log.info("来自{}的请求无需token,过滤器不拦截", path);
-        }else{
-            //获取请求头里的认证信息，如果没有，或者验证不成功返回无权限
-            List<String> headerTokens = request.getHeaders().get(TOKEN);
-            String message = null;
-            if (CollectionUtils.isEmpty(headerTokens)) {
-                //header和pathVariable里未找到accessToken
-                message = "accessToken is not found!";
-            } else {
-                //此处不校验权限 默认取header中token对应的第一个 或者pathVariable中的第一个
-                Map<String,Object> queryParams = new HashMap<>(2);
-                queryParams.put("token",headerTokens.get(0));
-                try{
-                    ResponseEntity<JsonNode> tokenRespEntity =
-                            restTemplate.getForEntity("http://SERVICE-AUTH/oauth/check_token?token={token}", JsonNode.class,queryParams);
-                    if(StringUtils.isEmpty(tokenRespEntity.getBody()) || !StringUtils.isEmpty(tokenRespEntity.getBody().get("error"))){
-                        message = "invalid token!";
-                    }
-                }catch (Exception ex){
-                    if(ex instanceof HttpClientErrorException){
-                        message = "invalid token!";
-                    }else{
-                        message = "Check Token Error";
-                    }
-                }
-            }
-            if (message != null) {
-                //验证失败，不进行路由
-                log.info("来自{}的请求被过滤器拦截返回: {}", path,message);
-                ServerHttpResponse response = exchange.getResponse();
-                response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
-                DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
-                return exchange.getResponse().writeWith(Flux.just(buffer));
+        for(String pattern : PATTERNS){
+            if(pathMatcher.match(pattern,path)){
+                //无需验证，直接放行
+                log.info("来自{}的请求无需token,过滤器不拦截", path);
+                return chain.filter(exchange);
             }
         }
+        //获取请求头里的认证信息，如果没有，或者验证不成功返回无权限
+        List<String> headerTokens = request.getHeaders().get(TOKEN);
+        String message = null;
+        if (CollectionUtils.isEmpty(headerTokens)) {
+            //header和pathVariable里未找到accessToken
+            message = "accessToken is not found!";
+        } else {
+            //此处不校验权限 默认取header中token对应的第一个 或者pathVariable中的第一个
+            Map<String,Object> queryParams = new HashMap<>(2);
+            queryParams.put("token",headerTokens.get(0));
+            try{
+                ResponseEntity<JsonNode> tokenRespEntity =
+                        restTemplate.getForEntity("http://SERVICE-AUTH/oauth/check_token?token={token}", JsonNode.class,queryParams);
+                if(StringUtils.isEmpty(tokenRespEntity.getBody()) || !StringUtils.isEmpty(tokenRespEntity.getBody().get("error"))){
+                    message = "invalid token!";
+                }
+            }catch (Exception ex){
+                if(ex instanceof HttpClientErrorException){
+                    message = "invalid token!";
+                }else{
+                    message = "Check Token Error";
+                }
+            }
+        }
+        if (message != null) {
+            //验证失败，不进行路由
+            log.info("来自{}的请求被过滤器拦截返回: {}", path,message);
+            ServerHttpResponse response = exchange.getResponse();
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
+            DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+            return exchange.getResponse().writeWith(Flux.just(buffer));
+        }
         return chain.filter(exchange);
-
     }
 
     @Override

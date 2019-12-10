@@ -35,7 +35,7 @@ public class SwaggerConfig {
         //设置header参数 accessToken
         ParameterBuilder tokenPar = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<>();
-        tokenPar.name("accessToken").description("大部分接口需要token,部分接口(如登录接口)不需要token")
+        tokenPar.name("Authorization").description("大部分接口需要token,部分接口(如登录接口)不需要token")
                 .modelRef(new ModelRef("string")).parameterType("header")
                 //header中的ticket参数非必填，传空也可以
                 .required(false).build();
