@@ -2,7 +2,7 @@ apollo:
   bootstrap:
     enabled: true
     # will inject 'application' and 'TEST1.apollo' namespaces in bootstrap phase
-    namespaces: application,application.yml
+    namespaces: application,sandhouse.common
 server:
 #  port: 8092
   connection-timeout: 180000

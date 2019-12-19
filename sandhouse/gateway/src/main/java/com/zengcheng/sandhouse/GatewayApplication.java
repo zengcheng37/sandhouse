@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 /**
- * zuul网关启动类
+ * SpringCloudGateway网关启动类
  * @author zengcheng
  * @date 2019/4/11
  */

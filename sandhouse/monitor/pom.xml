@@ -44,6 +44,12 @@
             <artifactId>spring-boot-admin-starter-server</artifactId>
             <version>2.1.4</version>
         </dependency>
+        <!--邮件服务-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>2.2.2.RELEASE</version>
+        </dependency>
         <!-- spring-security -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

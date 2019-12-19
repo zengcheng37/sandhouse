@@ -61,12 +61,4 @@ public class SwaggerProvider implements SwaggerResourcesProvider {
         });
         return resources;
     }
-
-    private SwaggerResource swaggerResource(String name, String location) {
-        SwaggerResource swaggerResource = new SwaggerResource();
-        swaggerResource.setName(name);
-        swaggerResource.setLocation(location);
-        swaggerResource.setSwaggerVersion("2.0");
-        return swaggerResource;
-    }
 }
