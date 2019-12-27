@@ -65,15 +65,23 @@ public class JwtTokenFilter implements GlobalFilter, Ordered {
             }
         }
         //获取请求头里的认证信息，如果没有，或者验证不成功返回无权限
-        List<String> headerTokens = request.getHeaders().get(TOKEN);
+        String token;
+        List<String> tokenHeaders = request.getHeaders().get(TOKEN);
+        List<String> tokenUrlParam =  request.getQueryParams().get("Authorization");
+        //优先使用header中的token
+        if(CollectionUtils.isEmpty(tokenHeaders)){
+            token = tokenUrlParam.get(0);
+        }else{
+            token = tokenHeaders.get(0);
+        }
         String message = null;
-        if (CollectionUtils.isEmpty(headerTokens)) {
+        if (StringUtils.isEmpty(token)) {
             //header和pathVariable里未找到accessToken
             message = "accessToken is not found!";
         } else {
             //此处不校验权限 默认取header中token对应的第一个 或者pathVariable中的第一个
             Map<String,Object> queryParams = new HashMap<>(2);
-            queryParams.put("token",headerTokens.get(0));
+            queryParams.put("token",token);
             try{
                 ResponseEntity<JsonNode> tokenRespEntity =
                         restTemplate.getForEntity("http://SERVICE-AUTH/oauth/check_token?token={token}", JsonNode.class,queryParams);

@@ -4,8 +4,8 @@ package com.zengcheng.sandhouse.interceptor;
 import com.zengcheng.sandhouse.common.enums.RedisKeys;
 import com.zengcheng.sandhouse.common.util.RedisService;
 import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
@@ -25,12 +25,12 @@ public class MyHandShakeHandler extends DefaultHandshakeHandler {
 
     @Override
     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
-        UserDetails loginUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Principal principal = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String loginUser = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         if(loginUser != null){
-            logger.debug(MessageFormat.format("WebSocket连接开始创建Principal，用户：{0}", loginUser.getUsername()));
+            logger.debug(MessageFormat.format("WebSocket连接开始创建Principal，用户：{0}", loginUser));
             //1. 将用户名存到Redis中
-            RedisService.Set.cacheSetObject(RedisKeys.WEBSOCKET_LINK_SET,loginUser.getUsername());
+            RedisService.Set.cacheSetObject(RedisKeys.WEBSOCKET_LINK_SET,loginUser);
 
             //2. 返回自定义的Principal
             return principal;

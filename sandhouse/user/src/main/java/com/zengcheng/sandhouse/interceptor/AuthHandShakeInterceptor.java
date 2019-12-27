@@ -30,18 +30,18 @@ public class AuthHandShakeInterceptor implements HandshakeInterceptor {
                                    ServerHttpResponse serverHttpResponse,
                                    WebSocketHandler webSocketHandler,
                                    Map<String, Object> map) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+        String userName = (String) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
 
-        if(RedisService.Set.containsSetObject(RedisKeys.WEBSOCKET_LINK_SET, userDetails.getUsername())){
+        if(RedisService.Set.containsSetObject(RedisKeys.WEBSOCKET_LINK_SET, userName)){
             log.error("同一个用户不准建立多个连接WebSocket");
             return false;
-        }else if(StringUtils.isEmpty(userDetails.getUsername())){
+        }else if(StringUtils.isEmpty(userName) || "AnonymousUser".equalsIgnoreCase(userName)){
             log.error("未登录系统，禁止连接WebSocket");
             return false;
         }else{
-            log.debug(MessageFormat.format("用户{0}请求建立WebSocket连接", userDetails.getUsername()));
+            log.info("用户{}请求建立WebSocket连接", userName);
             return true;
         }
     }
@@ -50,10 +50,10 @@ public class AuthHandShakeInterceptor implements HandshakeInterceptor {
     public void afterHandshake(ServerHttpRequest serverHttpRequest,
                                ServerHttpResponse serverHttpResponse,
                                WebSocketHandler webSocketHandler, Exception e) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+        String userName = (String) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        log.info("用户{}简历WebSocket连接握手结束",userDetails.getUsername());
+        log.info("用户{}建立WebSocket连接握手结束",userName);
     }
 
 }
