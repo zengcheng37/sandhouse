@@ -43,7 +43,7 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true
     username: root
-    password: yzzy65203
+    password: XXXXXXXX
     #druid相关配置
     druid:
       #监控统计拦截的filters

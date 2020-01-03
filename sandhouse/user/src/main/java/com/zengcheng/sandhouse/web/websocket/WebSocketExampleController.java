@@ -34,13 +34,13 @@ public class WebSocketExampleController {
 
     @GetMapping(value = "/websocket/hello",produces = "application/json; charset=utf-8")
     public ResponseEntity sayHello(@RequestParam String msg){
-        template.convertAndSend("/topic/public",msg);
+        template.convertAndSend("/topic/getResponse",msg);
         return ResponseEntityFactory.success(msg);
     }
 
     @GetMapping(value = "/websocket/helloToTargetPerson",produces = "application/json; charset=utf-8")
     public String sayHelloToTarget(@RequestParam String msg,@RequestParam String toPerson){
-        template.convertAndSendToUser(toPerson,"/queue/hello",msg);
+        template.convertAndSendToUser(toPerson,"/topic/hello",msg);
         return msg;
     }
 
