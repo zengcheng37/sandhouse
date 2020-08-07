@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @date 2019/4/12
  */
 @Component
-public class OrderFeignServiceHystrixImpl implements OrderFeignService {
+public class OrderFeignServiceFuseImpl implements OrderFeignService {
 
     @Override
     public String sayHiFromOrderModule() {

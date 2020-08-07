@@ -73,17 +73,6 @@ spring:
       #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
       poolPreparedStatements: false
       maxPoolPreparedStatementPerConnectionSize: 20
-  #zipkin服务链路追踪
-  zipkin:
-    sender:
-      #设置链路消息传递方式
-      type: rabbit
-    #设置zipkin地址
-    base-url: http://localhost:9411
-  #zipkin采样比例
-  sleuth:
-    sampler:
-      probability: 1.0
   #rabbitmq配置
   rabbitmq:
     host: localhost
