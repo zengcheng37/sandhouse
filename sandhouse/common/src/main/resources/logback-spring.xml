@@ -39,10 +39,7 @@
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <!--配置logstash的ip和端口，在logstash配置文件中-->
         <destination>localhost:5544</destination>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-            <charset>UTF-8</charset>
-        </encoder>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
     <!--输出到文件-->
