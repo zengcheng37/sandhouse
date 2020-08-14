@@ -91,6 +91,12 @@
             <artifactId>spring-cloud-alibaba-sentinel</artifactId>
             <version>2.1.1.RELEASE</version>
         </dependency>
+        <!-- logStash -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>6.4</version>
+        </dependency>
     </dependencies>
 
 </project>

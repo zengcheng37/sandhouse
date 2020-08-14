@@ -35,6 +35,15 @@
         </encoder>
     </appender>
 
+    <!--输出至logstash-->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <!--配置logstash的ip和端口，在logstash配置文件中-->
+        <destination>localhost:5544</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
 
     <!--输出到文件-->
 
@@ -178,6 +187,7 @@
 
     <root level="info">
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="LOGSTASH" />
         <appender-ref ref="DEBUG_FILE" />
         <appender-ref ref="INFO_FILE" />
         <appender-ref ref="WARN_FILE" />
