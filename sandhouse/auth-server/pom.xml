@@ -50,12 +50,6 @@
             <artifactId>mybatis-plus</artifactId>
             <version>3.1.2</version>
         </dependency>
-        <!-- JSON库，阿里的FastJson -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.58</version>
-        </dependency>
         <!-- spring-boot 整合 mybatis -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>

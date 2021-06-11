@@ -1,10 +1,11 @@
 package com.zengcheng.sandhouse.common.util;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -46,7 +47,7 @@ public  class RedisService {
          * @param value     要缓存的对象(最终对象会被转为JSON字符串存储)
          * @param keys      对象的唯一Key值,可以由多个参数组成
          */
-        public static void cacheHashObject(String prefixKey, Object value, Object ...keys){
+        public static void cacheHashObject(String prefixKey, Object value, Object ...keys) throws JsonProcessingException {
             if (StringUtils.isEmpty(prefixKey)){
                 logger.error("===Redis <cacheHashObject> but found <prefixKey> is Empty, cancel operate===");
                 return;
@@ -103,7 +104,7 @@ public  class RedisService {
             if (Objects.isNull(cacheVal)){
                 return null;
             } else {
-                return JSON.parseObject(cacheVal.toString(), cls);
+                return Jackson2ObjectMapperBuilder.json().build().convertValue(cacheVal.toString(), cls);
             }
         }
 
@@ -121,7 +122,7 @@ public  class RedisService {
             if (Objects.isNull(cacheVal)){
                 return null;
             } else {
-                return JSON.parseObject(cacheVal.toString(), cls);
+                return Jackson2ObjectMapperBuilder.json().build().convertValue(cacheVal.toString(), cls);
             }
         }
 
@@ -232,7 +233,7 @@ public  class RedisService {
          * @param value
          * @param keys
          */
-        public static void cacheValueObject(String prefixKey, Object value, Object ...keys){
+        public static void cacheValueObject(String prefixKey, Object value, Object ...keys) throws JsonProcessingException {
             if (StringUtils.isEmpty(prefixKey)){
                 logger.error("===Redis <cacheValueObject> but found <prefixKey> is Empty, cancel operate===");
                 return;
@@ -244,7 +245,7 @@ public  class RedisService {
             redisTemplate.opsForValue().set(assemblyUniqueKey(prefixKey,keys), formatValue2String(value));
         }
 
-        public static void cacheValueObjectWithNoSplit(String prefixKey, Object value, Object ...keys){
+        public static void cacheValueObjectWithNoSplit(String prefixKey, Object value, Object ...keys) throws JsonProcessingException {
             if (StringUtils.isEmpty(prefixKey)){
                 logger.error("===Redis <cacheValueObject> but found <prefixKey> is Empty, cancel operate===");
                 return;
@@ -273,7 +274,7 @@ public  class RedisService {
             if (Objects.isNull(valueObj)){
                 return null;
             }else{
-                return JSON.parseObject(valueObj.toString(), cls);
+                return Jackson2ObjectMapperBuilder.json().build().convertValue(valueObj.toString(), cls);
             }
         }
 
@@ -294,7 +295,7 @@ public  class RedisService {
             if (Objects.isNull(valueObj)){
                 return null;
             }else{
-                return JSON.parseObject(valueObj.toString(), cls);
+                return Jackson2ObjectMapperBuilder.json().build().convertValue(valueObj.toString(), cls);
             }
         }
 
@@ -358,7 +359,7 @@ public  class RedisService {
          * @param value
          * @param keys
          */
-        public static void cacheListObject(String prefixKey, Object value, Object ...keys){
+        public static void cacheListObject(String prefixKey, Object value, Object ...keys) throws JsonProcessingException {
             if (StringUtils.isEmpty(prefixKey)){
                 logger.error("===Redis <cacheListObject> but found <prefixKey> is Empty, cancel operate===");
                 return;
@@ -424,7 +425,7 @@ public  class RedisService {
             if (Objects.isNull(valueObj)){
                 return null;
             }else{
-                return JSON.parseObject(valueObj.toString(), cls);
+                return Jackson2ObjectMapperBuilder.json().build().convertValue(valueObj.toString(), cls);
             }
         }
 
@@ -478,7 +479,7 @@ public  class RedisService {
          * @param value
          * @param keys
          */
-        public static void cacheSetObject(String prefixKey, Object value, Object ...keys){
+        public static void cacheSetObject(String prefixKey, Object value, Object ...keys) throws JsonProcessingException {
             if (StringUtils.isEmpty(prefixKey)){
                 logger.error("===Redis <cacheSetObject> but found <prefixKey> is Empty, cancel operate===");
                 return ;
@@ -497,7 +498,7 @@ public  class RedisService {
          * @param keys
          * @return
          */
-        public static boolean containsSetObject(String prefixKey, Object value, Object ...keys){
+        public static boolean containsSetObject(String prefixKey, Object value, Object ...keys) throws JsonProcessingException {
             if (StringUtils.isEmpty(prefixKey)){
                 logger.error("===Redis <containsSetObject> but found <prefixKey> is Empty, cancel operate===");
                 return false;
@@ -516,7 +517,7 @@ public  class RedisService {
          * @param keys
          * @return
          */
-        public static boolean deleteSetObject(String prefixKey, Object value, Object ...keys){
+        public static boolean deleteSetObject(String prefixKey, Object value, Object ...keys) throws JsonProcessingException {
             if (StringUtils.isEmpty(prefixKey)){
                 logger.error("===Redis <deleteSetObject> but found <prefixKey> is Empty, cancel operate===");
                 return false;
@@ -564,7 +565,7 @@ public  class RedisService {
          * @param keys
          * @return
          */
-        public static boolean moveSetValue2DestSet(String prefixKey, Object value, String destFullKey, Object ...keys){
+        public static boolean moveSetValue2DestSet(String prefixKey, Object value, String destFullKey, Object ...keys) throws JsonProcessingException {
             if (StringUtils.isEmpty(prefixKey)){
                 logger.error("===Redis <moveSetValue> but found <prefixKey> is Empty, cancel operate===");
                 return false;
@@ -1012,16 +1013,16 @@ public  class RedisService {
      * @param value
      * @return
      */
-    private static String formatValue2String(Object value){
+    private static String formatValue2String(Object value) throws JsonProcessingException {
         if(value instanceof Long
                 || value instanceof Integer
                 || value instanceof Double
                 || value instanceof String) {
             return value.toString();
         } else if(value instanceof Collection) {
-            return JSON.toJSONString(value);
+            return Jackson2ObjectMapperBuilder.json().build().writeValueAsString(value);
         } else {
-            return JSON.toJSONString(value);
+            return Jackson2ObjectMapperBuilder.json().build().writeValueAsString(value);
         }
     }
 

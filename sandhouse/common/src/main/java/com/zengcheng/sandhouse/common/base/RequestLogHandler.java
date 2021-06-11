@@ -1,6 +1,7 @@
 package com.zengcheng.sandhouse.common.base;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -21,6 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @Component
 public class RequestLogHandler {
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     private ThreadLocal<Long> startTime = new ThreadLocal<>();
 
@@ -69,7 +74,7 @@ public class RequestLogHandler {
      * @return
      */
     @AfterReturning(pointcut = "execute()",returning = "object")
-    public void requestLogAfterReturningHandler(Object object){
+    public void requestLogAfterReturningHandler(Object object) throws JsonProcessingException {
         //通过RequestContextHolder获取HttpServletRequest对象
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                 .getRequestAttributes()).getRequest();
@@ -84,7 +89,7 @@ public class RequestLogHandler {
         if (object instanceof String) {
             log.info("\n\t  - {}请求结束:{}\n\t - 耗时:{}ms\n\t  - 返回 String:{}", method, uri, System.currentTimeMillis() - beginTime, object);
         } else {
-            log.info("\n\t  - {}请求结束:{}\n\t  - 耗时:{}ms\n\t  - 返回 Object:{}", method, uri, System.currentTimeMillis() - beginTime, JSON.toJSONString(object));
+            log.info("\n\t  - {}请求结束:{}\n\t  - 耗时:{}ms\n\t  - 返回 Object:{}", method, uri, System.currentTimeMillis() - beginTime, objectMapper.writeValueAsString(object));
         }
         startTime.remove();
     }

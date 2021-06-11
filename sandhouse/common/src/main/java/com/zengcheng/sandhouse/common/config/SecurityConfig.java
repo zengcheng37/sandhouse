@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/oauth/**").permitAll()
                 //其他接口全部接受验证
-                .anyRequest().authenticated()
+                .anyRequest().access("@customAntMatcherRuleServiceConfigImpl.hasPermission(request,authentication)")
                 .and()
                 //对上述匹配成功请求添加过滤器
                 .addFilterAfter(accessTokenFilter, UsernamePasswordAuthenticationFilter.class);

@@ -19,7 +19,7 @@ eureka:
     #registry-fetch-interval-seconds: 5
     enabled: true
     service-url:
-      defaultZone: http://admin:admin@localhost:8080/eureka/
+      defaultZone: ENC(3hRZyGvBq1GbxY0lnZjaUs7P9lzXm/QytvQIBhbPXzdJVVs0/VYzcTB/WMT94JVyLZPEcmzHc4Y=)
 spring:
   #应用信息
   application:
@@ -45,45 +45,71 @@ spring:
         max-wait:   1ms   # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle:   8   # 连接池中的最大空闲连接
         min-idle:   0   # 连接池中的最小空闲连接
-  #数据源配置
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimeZone=Shanghai&allowMultiQueries=true
-    username: root
-    password: XXXXXXX
-    #druid相关配置
-    druid:
-      #监控统计拦截的filters
-#      filters: stat
-      #配置初始化大小/最小/最大
-      initialSize: 1
-      minIdle: 1
-      maxActive: 20
-      #获取连接等待超时时间
-      maxWait: 60000
-      #间隔多久进行一次检测，检测需要关闭的空闲连接
-      timeBetweenEvictionRunsMillis: 60000
-      #一个连接在池中最小生存的时间
-      minEvictableIdleTimeMillis: 300000
-      validationQuery: SELECT 'x'
-      testWhileIdle: true
-      testOnBorrow: false
-      testOnReturn: false
-      #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
-      poolPreparedStatements: false
-      maxPoolPreparedStatementPerConnectionSize: 20
-  #zipkin服务链路追踪
-  zipkin:
-    sender:
-      #设置链路消息传递方式
-      type: rabbit
-    #设置zipkin地址
-    base-url: http://localhost:9411
-  #zipkin采样比例
-  sleuth:
-    sampler:
-      probability: 1.0
+  shardingsphere:
+    props:
+      sql:
+        show: true    # 开启sql日志输出
+    #数据源配置
+    datasource:
+      names: sandhouse0,sandhouse1    # 分库的逻辑库名,可配置多个
+        sandhouse0: # 逻辑库名
+          type: com.alibaba.druid.pool.DruidDataSource
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimeZone=Shanghai&allowMultiQueries=true
+          username: root
+          password: yzzy65203
+        sandhouse1: # 逻辑库名
+          type: com.alibaba.druid.pool.DruidDataSource
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/demo1?useUnicode=true&characterEncoding=utf8&tinyInt1isBit=false&useSSL=false&serverTimezone=GMT
+          username: user
+          password: password
+      #druid相关配置
+      druid:
+        #监控统计拦截的filters
+        #filters: stat
+        #配置初始化大小/最小/最大
+        initialSize: 1
+        minIdle: 1
+        maxActive: 20
+        #获取连接等待超时时间
+        maxWait: 60000
+        #间隔多久进行一次检测，检测需要关闭的空闲连接
+        timeBetweenEvictionRunsMillis: 60000
+        #一个连接在池中最小生存的时间
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
+        poolPreparedStatements: false
+        maxPoolPreparedStatementPerConnectionSize: 20
+    sharding:
+      tables: # 逻辑表名
+        user: # 逻辑表名
+          actual-data-nodes: sandhouse->{0..1}.user$->{0..1}
+          table-strategy: # 分表策略
+            inline:
+              sharding-column: id    # 分片路由标准
+              algorithm-expression: user$->{id % 2} # 分片算法表达式
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+        order: # 逻辑表名
+          actual-data-nodes: sandhouse->{0..1}.order$->{0..1}
+          table-strategy: # 分表策略
+            inline:
+              sharding-column: id    # 分片路由标准
+              algorithm-expression: order$->{id % 2} # 分片算法表达式
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+      binding-tables: user
+      default-database-strategy: # 分库策略
+        inline:
+          sharding-column: id    # 分片路由标准
+          algorithm-expression: sandhouse${id % 2}    # 分库策略表达式 		* 注:此处配置sandhouse${id % 2}而不是sandhouse->${id % 2},因为ShardingStrategy.doSharding(Collection<String> availableTargetNames, Collection<RouteValue> shardingValues)函数会解析策略表达式shardingValues为直接替换$变量进而匹配逻辑库名availableTargetNames
   #rabbitmq配置
   rabbitmq:
     host: localhost
@@ -99,7 +125,7 @@ spring:
     active: custom
 #Hystrix断路器
 feign:
-  hystrix:
+  sentinel:
     enabled: true
 #actuator监控检查配置
 management:
@@ -119,3 +145,28 @@ hystrix:
       execution:
         isolation:
           strategy: SEMAPHORE
+
+sandhouse:
+  auth:
+    antMatchRules:
+      #校验规则
+      #规则id
+      - id: rule1
+        #是否需要具备某权限
+        roles:
+          - ROLE_ADMIN
+          - ROLE_USER
+        #此条规则涉及路径
+        paths:
+          - /demo/**,POST
+        #该条规则是校验通过还是拒绝
+        ifPass: true
+      - id: rule2
+        #是否需要具备某权限
+        roles:
+          - ROLE_ADMIN
+        #此条规则涉及路径
+        paths:
+          - /api/*,GET
+        #该条规则是校验通过还是拒绝
+        ifPass: true
